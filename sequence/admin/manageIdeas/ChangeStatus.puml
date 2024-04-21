@@ -1,0 +1,44 @@
+@startuml Comment On Idea
+!theme toy
+title Remove Idea
+actor User
+participant UI
+participant AzureFunction
+database CosmosDB
+
+activate User
+User -> UI: update idea status
+activate UI
+
+alt valid transition
+UI -> AzureFunction: updateIdeaStatus(ideaId, statusId)
+activate AzureFunction
+AzureFunction -> CosmosDB: updateIdeaStatus(ideaId, statusId)
+activate CosmosDB
+CosmosDB --> AzureFunction: statusUpdatedResponse()
+deactivate CosmosDB
+AzureFunction --> UI: statusUpdatedResponse()
+deactivate AzureFunction
+UI --> User: status updated
+
+else invalid transition
+UI -> AzureFunction: updateIdeaStatus(ideaId, statusId)
+activate AzureFunction
+AzureFunction --> UI: invalidTransitionResponse()
+deactivate AzureFunction
+UI --> User: invalid transition
+
+else idea not found
+UI -> AzureFunction: updateIdeaStatus(ideaId, statusId)
+activate AzureFunction
+AzureFunction -> CosmosDB: updateIdeaStatus(ideaId, statusId)
+activate CosmosDB
+CosmosDB --> AzureFunction: ideaNotFoundResponse()
+deactivate CosmosDB
+AzureFunction --> UI: ideaNotFoundResponse()
+deactivate AzureFunction
+UI --> User: idea not found
+
+end
+
+@enduml

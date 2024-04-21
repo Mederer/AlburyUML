@@ -1,0 +1,29 @@
+@startuml Submit Idea
+!theme toy
+title Submit Idea
+
+actor User order 1
+participant UI order 2
+participant AzureFunction order 3
+database DB order 4
+
+User -> UI: Submit Idea
+
+UI -> AzureFunction: Submit Idea
+
+alt valid idea 
+
+   AzureFunction -> DB: Persist Idea
+   DB --> AzureFunction: Persist Idea Response
+   AzureFunction --> UI: Submit Idea Response
+
+else invalid idea
+
+   AzureFunction --> UI: Invalid Idea Response
+
+end
+
+UI --> User: Idea Response
+
+
+@enduml

@@ -1,0 +1,23 @@
+@startuml Comment On Idea
+!theme toy
+title Comment On Idea
+actor User
+participant UI
+participant AzureFunction
+database CosmosDB
+
+activate User
+User -> UI: submit comment
+activate UI
+UI -> AzureFunction: submitComment(ideaId, comment)
+activate AzureFunction
+AzureFunction -> CosmosDB: createComment(ideaId, comment)
+activate CosmosDB
+CosmosDB --> AzureFunction: commentResponse()
+deactivate CosmosDB
+AzureFunction --> UI: commentResponse()
+deactivate AzureFunction
+UI --> User: comment submitted
+
+
+@enduml

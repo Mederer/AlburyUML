@@ -1,0 +1,32 @@
+@startuml VoteOnIdea
+!theme toy
+title Vote On Idea
+actor User
+participant UI
+participant AzureFunction
+database CosmosDB
+
+activate User
+User -> UI: castVote(vote, ideaId)
+activate UI
+UI -> AzureFunction: castVote(vote, ideaId)
+activate AzureFunction
+
+AzureFunction -> CosmosDB: getVote(ideaId)
+activate CosmosDB
+CosmosDB --> AzureFunction: vote?
+
+alt vote exists
+    AzureFunction -> CosmosDB: updateVote(vote)
+    CosmosDB --> AzureFunction: updated vote
+else vote does not exist
+    AzureFunction -> CosmosDB: createVote(vote)
+    CosmosDB --> AzureFunction: created vote
+end
+deactivate CosmosDB
+AzureFunction --> UI: voteResponse()
+deactivate AzureFunction
+UI --> User: voteResponse()
+
+
+@enduml

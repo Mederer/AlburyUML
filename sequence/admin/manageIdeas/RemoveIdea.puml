@@ -1,0 +1,38 @@
+@startuml Comment On Idea
+!theme toy
+title Remove Idea
+actor User
+participant UI
+participant AzureFunction
+database CosmosDB
+
+activate User
+User -> UI: remove idea
+activate UI
+
+alt idea exists
+    UI -> AzureFunction: deleteIdea(ideaId)
+    activate AzureFunction
+    AzureFunction -> CosmosDB: deleteIdea(ideaId)
+    activate CosmosDB
+    CosmosDB --> AzureFunction: ideaDeletedResponse
+    deactivate CosmosDB
+    AzureFunction --> UI: ideaDeletedResponse
+    deactivate AzureFunction
+    UI --> User: idea removed
+else
+    UI -> AzureFunction: deleteIdea(ideaId)
+    activate AzureFunction
+    AzureFunction -> CosmosDB: deleteIdea(ideaId)
+    activate CosmosDB
+    CosmosDB --> AzureFunction: ideaNotFoundResponse
+    deactivate CosmosDB
+    AzureFunction --> UI: ideaNotFoundResponse
+    deactivate AzureFunction
+    UI --> User: idea not found
+end
+
+deactivate UI
+deactivate User
+
+@enduml

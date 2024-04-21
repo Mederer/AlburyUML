@@ -1,0 +1,39 @@
+@startuml ViewIdea
+!theme toy
+title View Idea
+
+actor User order 1
+participant UI order 2
+participant AzureFunction order 3
+database DB order 4
+
+alt multiple ideas
+ User -> UI: viewIdeas(ids)
+ activate UI
+ UI -> AzureFunction: fetchIdeas(ids)
+ activate AzureFunction
+ AzureFunction -> DB: fetchIdeas(ids)
+ activate DB
+ DB --> AzureFunction: ideaResponse(ideas)
+ deactivate DB
+ AzureFunction --> UI: ideaResponse(ideas)
+ deactivate AzureFunction
+ UI --> User: ideaResponse(ideas)
+ deactivate UI
+
+else single idea
+ User -> UI: viewIdea(id)
+ activate UI
+ UI -> AzureFunction: fetchIdea(id)
+ activate AzureFunction
+ AzureFunction -> DB: fetchIdea(id)
+ activate DB
+ DB --> AzureFunction: ideaResponse(idea)
+ deactivate DB
+ AzureFunction --> UI: ideaResponse(idea)
+ deactivate AzureFunction
+ UI --> User: ideaResponse(idea)
+ deactivate UI
+end
+
+@enduml
