@@ -20,7 +20,7 @@ alt idea exists
     AzureFunction --> UI: ideaDeletedResponse
     deactivate AzureFunction
     UI --> User: idea removed
-else
+else idea does not exist
     UI -> AzureFunction: deleteIdea(ideaId)
     activate AzureFunction
     AzureFunction -> CosmosDB: deleteIdea(ideaId)
